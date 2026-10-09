@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="bn" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বাংলা গেম জোন - Made By SHAYON</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            cyan: '#00f0ff',
+                            pink: '#ff007f',
+                            purple: '#7000ff',
+                            yellow: '#ffe600',
+                            dark: '#0a0a12',
+                            card: '#121225'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Hind Siliguri', 'Kalpurush', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Bengali Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom Cyberpunk/Neon Styling -->
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            user-select: none;
+            background-color: #06060c;
+        }
+
+        /* Neon Glow Effects */
+        .neon-border-cyan {
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            border: 1px solid rgba(0, 240, 255, 0.6);
+        }
+        .neon-border-pink {
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+            border: 1px solid rgba(255, 0, 127, 0.6);
+        }
+        .neon-text-cyan {
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.8);
+        }
+        .neon-text-pink {
+            text-shadow: 0 0 8px rgba(255, 0, 127, 0.8);
+        }
+
+        /* Glassmorphism Effect */
+        .glass-panel {
+            background: rgba(18, 18, 37, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* 3D Card Flip Perspective */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080811;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f1f3a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+
+        /* Pulsing Animation */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 8px #00f0ff); }
+            50% { opacity: 1; filter: drop-shadow(0 0 18px #ff007f); }
+        }
+        .animate-glow {
+            animation: pulseGlow 3s infinite alternate;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden" id="portalBody">
+
+    <!-- Header / Navigation -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-cyan-500/20 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <!-- Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchCategory('all')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/30">
+                    <i class="fas fa-gamepad text-xl"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-black bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500 bg-clip-text text-transparent tracking-wide">সাইবার গেম জোন</span>
+                    <span class="text-[10px] text-cyan-400/80 block -mt-1 font-mono tracking-wider">ULTIMATE BENGALI GAMING PORTAL</span>
+                </div>
+            </div>
+
+            <!-- Search Bar (Desktop) -->
+            <div class="hidden md:flex items-center flex-1 max-w-md mx-8 relative">
+                <i class="fas fa-search absolute left-3.5 text-cyan-500/60"></i>
+                <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="আপনার পছন্দের খেলা খুঁজুন..." 
+                    class="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-950/80 border border-slate-800 focus:outline-none focus:border-cyan-500 text-sm text-slate-200 placeholder-slate-500 transition-all shadow-inner">
+            </div>
+
+            <!-- Controls & Sound Toggle -->
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleAudioMute()" id="soundToggleBtn" class="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-cyan-400 transition-all flex items-center justify-center shadow-md" title="সাউন্ড অন/অফ">
+                    <i class="fas fa-volume-up text-lg" id="soundIcon"></i>
+                </button>
+                <div class="flex items-center gap-2 bg-gradient-to-r from-purple-950/80 to-slate-900 border border-purple-500/30 px-3.5 py-1.5 rounded-xl text-amber-300 text-sm font-semibold shadow-inner">
+                    <i class="fas fa-trophy text-amber-400 animate-bounce"></i>
+                    <span>মোট পয়েন্ট: <span id="totalPortalScore" class="font-mono font-bold text-white">০</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="flex-1">
+        <!-- Hero Section -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+            <div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-950 via-purple-950 to-slate-950 p-6 sm:p-10 border border-cyan-500/30 shadow-2xl">
+                <div class="absolute -right-12 -top-12 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -left-12 -bottom-12 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="relative z-10 max-w-2xl">
+                    <span class="px-3 py-1 bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 text-xs rounded-full font-semibold mb-3 inline-block font-mono tracking-wider">
+                        🎮 ২.০ অ্যাডভান্সড ভার্সন
+                    </span>
+                    <h1 class="text-2xl sm:text-4xl font-black text-white leading-tight mb-3">
+                        ওয়েব ব্রাউজারে উপভোগ করুন <span class="bg-gradient-to-r from-cyan-400 via-pink-500 to-yellow-400 bg-clip-text text-transparent">হাই-কোয়ালিটি আর্কেড গেমস!</span>
+                    </h1>
+                    <p class="text-slate-300 text-sm sm:text-base mb-6 leading-relaxed">
+                        স্পেস শুটার, আর্কেড স্নেক, নিওন ব্রেকআউট এবং ৩ডি সাইবার মেমোরি কার্ড গেম—সাউন্ড ইফেক্ট, পাওয়ার-আপ ও লাইভ পার্টিকেলের সাথে সম্পূর্ণ বাংলায় খেলুন।
+                    </p>
+                    <button onclick="openGame('space')" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold px-6 py-3 rounded-xl shadow-lg shadow-cyan-500/25 transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
+                        <i class="fas fa-rocket"></i> স্পেস শুটার খেলুন
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Filters -->
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="categoryContainer">
+                <!-- Dynamically Inserted Categories -->
+            </div>
+        </nav>
+
+        <!-- Games Grid -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-slate-100" id="sectionTitle">
+                    <i class="fas fa-fire text-pink-500"></i> সেরা গেম কালেকশন
+                </h2>
+                <span class="text-xs text-slate-400 font-mono" id="gameCountText">৪টি গেম পাওয়া গেছে</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="gamesGrid">
+                <!-- Dynamic Game Cards -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Game Player Modal -->
+    <div id="gameModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-2 sm:p-4 bg-slate-950/90 backdrop-blur-md overflow-y-auto">
+        <div class="bg-slate-900 border border-cyan-500/40 w-full max-w-4xl rounded-2xl shadow-2xl shadow-cyan-500/10 overflow-hidden flex flex-col max-h-[96vh]">
+            
+            <!-- Modal Header -->
+            <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950">
+                <div class="flex items-center gap-3">
+                    <div id="modalGameIcon" class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl border border-cyan-500/30">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div>
+                        <h3 id="modalGameTitle" class="font-bold text-lg text-white">গেমের নাম</h3>
+                        <p id="modalGameCategory" class="text-xs text-cyan-400">ক্যাটাগরি</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleFullscreen()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm" title="ফুলস্ক্রিন">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                    <button onclick="closeGameModal()" class="p-2 rounded-xl bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white text-sm transition-all border border-rose-500/30" title="বন্ধ করুন">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Game Viewport Area -->
+            <div class="relative bg-slate-950 flex-1 flex flex-col items-center justify-center min-h-[360px] sm:min-h-[480px] p-2 overflow-hidden" id="canvasContainer">
+                
+                <!-- Main HTML5 Canvas -->
+                <canvas id="gameCanvas" class="bg-black rounded-xl border border-slate-800 max-w-full max-h-[62vh] object-contain shadow-2xl shadow-cyan-500/5"></canvas>
+                
+                <!-- HTML Overlay Container for HTML/CSS-based games like Memory match -->
+                <div id="htmlGameContainer" class="hidden w-full h-full flex items-center justify-center"></div>
+
+                <!-- Touch / Virtual D-Pad Overlay (Visible on Touch devices or smaller screens for Arcade Games) -->
+                <div id="virtualDpad" class="hidden sm:hidden mt-3 w-full max-w-xs grid grid-cols-3 gap-2">
+                    <div></div>
+                    <button id="btnUp" class="bg-slate-800 border border-slate-700 py-3 rounded-lg text-cyan-400 active:bg-cyan-500 active:text-slate-950 font-bold text-center"><i class="fas fa-arrow-up"></i></button>
+                    <div></div>
+                    <button id="btnLeft" class="bg-slate-800 border border-slate-700 py-3 rounded-lg text-cyan-400 active:bg-cyan-500 active:text-slate-950 font-bold text-center"><i class="fas fa-arrow-left"></i></button>
+                    <button id="btnDown" class="bg-slate-800 border border-slate-700 py-3 rounded-lg text-cyan-400 active:bg-cyan-500 active:text-slate-950 font-bold text-center"><i class="fas fa-arrow-down"></i></button>
+                    <button id="btnRight" class="bg-slate-800 border border-slate-700 py-3 rounded-lg text-cyan-400 active:bg-cyan-500 active:text-slate-950 font-bold text-center"><i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Modal Footer Score Stats -->
+            <div class="p-4 border-t border-slate-800 bg-slate-950 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-6">
+                    <div>
+                        <span class="text-xs text-slate-400 block">বর্তমান স্কোর</span>
+                        <span id="gameCurrentScore" class="text-xl font-black font-mono text-amber-400">০</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-slate-400 block">সর্বোচ্চ স্কোর</span>
+                        <span id="gameHighScore" class="text-xl font-black font-mono text-cyan-400">০</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button id="restartBtn" onclick="restartCurrentGame()" class="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-sm rounded-xl flex items-center gap-2 transition-all shadow-md">
+                        <i class="fas fa-redo"></i> পুনরায় শুরু
+                    </button>
+                </div>
+            </div>
+
+            <!-- Game Instructions -->
+            <div class="px-4 py-2.5 bg-slate-900 border-t border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+                <span id="gameInstructions"><i class="fas fa-info-circle text-cyan-400 mr-1"></i> নির্দেশিকা দেখতে গেম খুলুন।</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer with "Made By SHAYON" Branding -->
+    <footer class="border-t border-slate-800/80 bg-slate-950/90 mt-12 py-8 relative">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col items-center justify-center space-y-4">
+            
+            <!-- Prominent Glowing Badge -->
+            <div class="relative group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-pink-500 to-purple-600 rounded-full blur opacity-70 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-glow"></div>
+                <div class="relative px-6 py-2.5 bg-slate-950 rounded-full border border-cyan-500/40 flex items-center space-x-2 space-x-reverse">
+                    <i class="fas fa-code text-cyan-400 text-sm"></i>
+                    <span class="text-slate-300 font-medium text-sm">ডিজাইন ও ডেভেলপমেন্ট:</span>
+                    <span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-pink-400 to-yellow-300 tracking-wider text-base font-mono">
+                        Made By SHAYON
+                    </span>
+                    <i class="fas fa-heart text-pink-500 text-xs animate-pulse"></i>
+                </div>
+            </div>
+
+            <p class="text-xs text-slate-500 text-center max-w-md">
+                ওয়েব অডিও এপিআই, এইচটিএমএল৫ ক্যানভাস এবং পিওর জাভাস্ক্রিপ্ট দ্বারা চালিত আধুনিক ওয়েব গেম পোর্টাল।
+            </p>
+            <p class="text-[11px] text-slate-600 font-mono">© ২০২৬ সাইবার গেম জোন। সর্বস্বত্ব সংরক্ষিত।</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic & Sound Synth -->
+    <script>
+        /* ==========================================================================
+           1. WEB AUDIO API SYNTHESIZER (No External MP3 Assets Needed)
+           ========================================================================== */
+        let audioCtx = null;
+        let isMuted = false;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function toggleAudioMute() {
+            isMuted = !isMuted;
+            const icon = document.getElementById('soundIcon');
+            icon.className = isMuted ? 'fas fa-volume-mute text-rose-500' : 'fas fa-volume-up text-cyan-400';
+        }
+
+        // Sound Generator Functions
+        function playSound(type) {
+            if (isMuted) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+
+                if (type === 'shoot') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.15);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.15);
+                } else if (type === 'explosion') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(120, now);
+                    osc.frequency.linearRampToValueAtTime(30, now + 0.3);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'pickup') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.2);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                } else if (type === 'bounce') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.exponentialRampToValueAtTime(150, now + 0.08);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'gameover') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.linearRampToValueAtTime(80, now + 0.5);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.5);
+                }
+            } catch (e) {
+                console.log("Audio play error:", e);
+            }
+        }
+
+        /* ==========================================================================
+           2. PORTAL DATA & SYSTEM STATE
+           ========================================================================== */
+        const gamesData = [
+            {
+                id: 'space',
+                title: 'স্পেস শুটার (Space Shooter)',
+                category: 'action',
+                categoryBn: 'অ্যাকশন',
+                rating: '৪.৯',
+                plays: '১৮.৪কে',
+                icon: 'fa-rocket',
+                color: 'from-cyan-500 to-blue-700',
+                desc: 'মহাকাশে এলিয়েন শত্রুদের সাথে লড়াই করুন! লেজার ফায়ার, শিল্ড ও পাওয়ার-আপ সংগ্রহ করে টিকে থাকুন।',
+                instructions: 'অ্যারো কি/মাউস দিয়ে শিপ সরান, স্পেসবার (Spacebar) দিয়ে লেজার ফায়ার করুন।'
+            },
+            {
+                id: 'snake',
+                title: 'অ্যাডভান্সড সাপের খেলা (Neon Snake)',
+                category: 'arcade',
+                categoryBn: 'আর্কিড',
+                rating: '৪.৯',
+                plays: '১৪.২কে',
+                icon: 'fa-staff-snake',
+                color: 'from-emerald-500 to-teal-700',
+                desc: 'গোল্ডেন অ্যাপল ও স্লো-মোশন বোনাস খেয়ে সর্বোচ্চ স্কোর রেকর্ড করুন।',
+                instructions: 'অ্যারো কি (Arrow Keys) বা স্ক্রিনের টাচ প্যাড দিয়ে সাপ পরিচালনা করুন।'
+            },
+            {
+                id: 'breaker',
+                title: 'নিওন ব্রেকআউট (Brick Breaker)',
+                category: 'action',
+                categoryBn: 'অ্যাকশন',
+                rating: '৪.৮',
+                plays: '১১.৮কে',
+                icon: 'fa-cube',
+                color: 'from-pink-500 to-rose-700',
+                desc: 'রঙিন ইট ভেঙে লেজার প্যাডেল ও ওয়াইড বর্ডার পাওয়ার-আপ লুফে নিন।',
+                instructions: 'মাউস বা বাটন দিয়ে প্যাডেল সরান এবং বল বাউন্স করুন।'
+            },
+            {
+                id: 'memory',
+                title: 'সাইবার ৩ডি মেমোরি মেলাও',
+                category: 'puzzle',
+                categoryBn: 'পাজল',
+                rating: '৪.৯',
+                plays: '১৬.৫কে',
+                icon: 'fa-brain',
+                color: 'from-purple-500 to-indigo-700',
+                desc: 'সাইবারপাঙ্ক থিমযুক্ত থ্রিডি কার্ড ফ্লিপ করে বুদ্ধি পরীক্ষা করুন এবং স্ট্রিক বোনাস জিতুন।',
+                instructions: 'কার্ডে ক্লিক করে ফ্লিপ করুন এবং জোড়া ছবিগুলো দ্রুত মেলাতে চেষ্টা করুন।'
+            }
+        ];
+
+        const categories = [
+            { id: 'all', name: 'সব গেম', icon: 'fa-border-all' },
+            { id: 'action', name: 'অ্যাকশন', icon: 'fa-bolt' },
+            { id: 'arcade', name: 'আর্কিড', icon: 'fa-gamepad' },
+            { id: 'puzzle', name: 'পাজল', icon: 'fa-puzzle-piece' }
+        ];
+
+        let activeCategory = 'all';
+        let currentGameId = null;
+        let gameLoopAnimation = null;
+        let highScores = JSON.parse(localStorage.getItem('shayon_portal_highscores')) || {};
+
+        function toBengaliNumerals(num) {
+            const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+            return num.toString().replace(/\d/g, d => bnDigits[d]);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderCategories();
+            renderGames();
+            updateTotalPortalScore();
+        });
+
+        function renderCategories() {
+            const container = document.getElementById('categoryContainer');
+            container.innerHTML = categories.map(cat => `
+                <button onclick="switchCategory('${cat.id}')" 
+                    class="px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 whitespace-nowrap transition-all ${
+                        activeCategory === cat.id 
+                        ? 'bg-cyan-500 text-slate-950 font-extrabold shadow-lg shadow-cyan-500/30' 
+                        : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200'
+                    }">
+                    <i class="fas ${cat.icon}"></i> ${cat.name}
+                </button>
+            `).join('');
+        }
+
+        function switchCategory(catId) {
+            activeCategory = catId;
+            renderCategories();
+            renderGames();
+        }
+
+        function renderGames(filterText = '') {
+            const grid = document.getElementById('gamesGrid');
+            let filtered = gamesData.filter(g => activeCategory === 'all' || g.category === activeCategory);
+            
+            if (filterText.trim() !== '') {
+                filtered = filtered.filter(g => g.title.toLowerCase().includes(filterText.toLowerCase()));
+            }
+
+            document.getElementById('gameCountText').innerText = `${toBengaliNumerals(filtered.length)}টি গেম পাওয়া গেছে`;
+
+            grid.innerHTML = filtered.map(game => {
+                const highScore = highScores[game.id] || 0;
+                return `
+                <div class="bg-slate-900 border border-slate-800/80 rounded-2xl overflow-hidden hover:border-cyan-500/50 hover:shadow-xl hover:shadow-cyan-500/10 transition-all duration-300 flex flex-col justify-between group">
+                    <div>
+                        <div class="h-40 bg-gradient-to-tr ${game.color} relative p-4 flex items-center justify-center overflow-hidden">
+                            <i class="fas ${game.icon} text-7xl text-white/10 absolute -right-3 -bottom-3 group-hover:scale-110 transition-transform duration-300"></i>
+                            <div class="w-16 h-16 rounded-2xl bg-slate-950/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-3xl text-white shadow-xl">
+                                <i class="fas ${game.icon}"></i>
+                            </div>
+                            <span class="absolute top-3 left-3 px-2.5 py-1 bg-slate-950/70 backdrop-blur-md text-[11px] font-semibold text-cyan-300 rounded-lg border border-cyan-500/30">
+                                ${game.categoryBn}
+                            </span>
+                        </div>
+                        <div class="p-5">
+                            <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+                                <span class="flex items-center gap-1 text-amber-400 font-bold"><i class="fas fa-star"></i> ${game.rating}</span>
+                                <span><i class="fas fa-play text-slate-500 mr-1"></i> ${game.plays}</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-white group-hover:text-cyan-400 transition-colors mb-2">${game.title}</h3>
+                            <p class="text-xs text-slate-400 line-clamp-2 leading-relaxed mb-4">${game.desc}</p>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0">
+                        <div class="flex justify-between items-center text-xs text-slate-400 border-t border-slate-800/80 pt-3 mb-4 font-mono">
+                            <span>সর্বোচ্চ স্কোর:</span>
+                            <span class="font-bold text-cyan-400 text-sm">${toBengaliNumerals(highScore)}</span>
+                        </div>
+                        <button onclick="openGame('${game.id}')" class="w-full py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500 text-cyan-400 hover:text-slate-950 font-bold text-sm border border-cyan-500/30 transition-all flex items-center justify-center gap-2">
+                            <i class="fas fa-play text-xs"></i> খেলুন
+                        </button>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        function handleSearch() {
+            renderGames(document.getElementById('searchInput').value);
+        }
+
+        function saveScore(gameId, score) {
+            if (!highScores[gameId] || score > highScores[gameId]) {
+                highScores[gameId] = score;
+                localStorage.setItem('shayon_portal_highscores', JSON.stringify(highScores));
+                document.getElementById('gameHighScore').innerText = toBengaliNumerals(score);
+                updateTotalPortalScore();
+                renderGames();
+            }
+        }
+
+        function updateTotalPortalScore() {
+            const total = Object.values(highScores).reduce((a, b) => a + b, 0);
+            document.getElementById('totalPortalScore').innerText = toBengaliNumerals(total);
+        }
+
+        function openGame(gameId) {
+            getAudioContext();
+            const game = gamesData.find(g => g.id === gameId);
+            if (!game) return;
+
+            currentGameId = gameId;
+            document.getElementById('modalGameTitle').innerText = game.title;
+            document.getElementById('modalGameCategory').innerText = game.categoryBn;
+            document.getElementById('gameInstructions').innerHTML = `<i class="fas fa-info-circle text-cyan-400 mr-1"></i> ${game.instructions}`;
+            document.getElementById('gameHighScore').innerText = toBengaliNumerals(highScores[gameId] || 0);
+            document.getElementById('gameCurrentScore').innerText = '০';
+
+            const canvas = document.getElementById('gameCanvas');
+            const htmlContainer = document.getElementById('htmlGameContainer');
+            const virtualDpad = document.getElementById('virtualDpad');
+
+            canvas.classList.remove('hidden');
+            htmlContainer.classList.add('hidden');
+            htmlContainer.innerHTML = '';
+            virtualDpad.classList.add('hidden');
+
+            document.getElementById('gameModal').classList.remove('hidden');
+
+            if (gameLoopAnimation) cancelAnimationFrame(gameLoopAnimation);
+
+            // Engine Initializers
+            if (gameId === 'space') {
+                initSpaceShooter();
+            } else if (gameId === 'snake') {
+                virtualDpad.classList.remove('hidden');
+                initAdvancedSnake();
+            } else if (gameId === 'breaker') {
+                initNeonBreaker();
+            } else if (gameId === 'memory') {
+                canvas.classList.add('hidden');
+                htmlContainer.classList.remove('hidden');
+                initCyberMemory();
+            }
+        }
+
+        function closeGameModal() {
+            if (gameLoopAnimation) cancelAnimationFrame(gameLoopAnimation);
+            document.getElementById('gameModal').classList.add('hidden');
+            currentGameId = null;
+        }
+
+        function restartCurrentGame() {
+            if (currentGameId) openGame(currentGameId);
+        }
+
+        function toggleFullscreen() {
+            const container = document.getElementById('canvasContainer');
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        /* ==========================================================================
+           GAME 1: ADVANCED SPACE SHOOTER (স্পেস শুটার)
+           ========================================================================== */
+        function initSpaceShooter() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 480;
+            canvas.height = 540;
+
+            let score = 0;
+            let gameOver = false;
+
+            // Player Ship
+            const player = {
+                x: canvas.width / 2 - 20,
+                y: canvas.height - 60,
+                w: 40,
+                h: 40,
+                speed: 5,
+                shield: 100,
+                doubleLaser: false
+            };
+
+            let bullets = [];
+            let enemies = [];
+            let particles = [];
+            let powerups = [];
+            let keys = {};
+
+            window.onkeydown = e => { keys[e.key] = true; };
+            window.onkeyup = e => { keys[e.key] = false; };
+
+            // Touch Drag for Mobile
+            canvas.ontouchmove = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const touchX = e.touches[0].clientX - rect.left;
+                player.x = touchX - player.w / 2;
+            };
+
+            let lastShot = 0;
+
+            function spawnEnemy() {
+                if (Math.random() < 0.035) {
+                    enemies.push({
+                        x: Math.random() * (canvas.width - 30),
+                        y: -30,
+                        w: 30,
+                        h: 30,
+                        speed: 1.8 + Math.random() * 2,
+                        hp: 2
+                    });
+                }
+            }
+
+            function createExplosion(x, y, color) {
+                playSound('explosion');
+                for (let i = 0; i < 15; i++) {
+                    particles.push({
+                        x: x, y: y,
+                        vx: (Math.random() - 0.5) * 6,
+                        vy: (Math.random() - 0.5) * 6,
+                        radius: Math.random() * 3 + 1,
+                        color: color || '#ff007f',
+                        alpha: 1
+                    });
+                }
+            }
+
+            function loop(timestamp) {
+                if (gameOver) return;
+
+                ctx.fillStyle = '#06060c';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Controls
+                if ((keys['ArrowLeft'] || keys['a']) && player.x > 0) player.x -= player.speed;
+                if ((keys['ArrowRight'] || keys['d']) && player.x < canvas.width - player.w) player.x += player.speed;
+                if ((keys[' '] || keys['ArrowUp']) && timestamp - lastShot > 180) {
+                    playSound('shoot');
+                    bullets.push({ x: player.x + player.w / 2 - 2, y: player.y, w: 4, h: 12, speed: 8 });
+                    lastShot = timestamp;
+                }
+
+                // Render Player Ship
+                ctx.fillStyle = '#00f0ff';
+                ctx.beginPath();
+                ctx.moveTo(player.x + player.w / 2, player.y);
+                ctx.lineTo(player.x + player.w, player.y + player.h);
+                ctx.lineTo(player.x, player.y + player.h);
+                ctx.closePath();
+                ctx.fill();
+
+                // Shield Bar
+                ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                ctx.fillRect(10, 10, 100, 8);
+                ctx.fillStyle = player.shield > 30 ? '#00f0ff' : '#ff007f';
+                ctx.fillRect(10, 10, player.shield, 8);
+
+                // Bullets
+                bullets.forEach((b, i) => {
+                    b.y -= b.speed;
+                    ctx.fillStyle = '#ffe600';
+                    ctx.fillRect(b.x, b.y, b.w, b.h);
+                    if (b.y < 0) bullets.splice(i, 1);
+                });
+
+                // Spawn & Update Enemies
+                spawnEnemy();
+                enemies.forEach((e, ei) => {
+                    e.y += e.speed;
+                    ctx.fillStyle = '#ff007f';
+                    ctx.fillRect(e.x, e.y, e.w, e.h);
+
+                    // Bullet Hit Detection
+                    bullets.forEach((b, bi) => {
+                        if (b.x < e.x + e.w && b.x + b.w > e.x && b.y < e.y + e.h && b.y + b.h > e.y) {
+                            e.hp--;
+                            bullets.splice(bi, 1);
+                            if (e.hp <= 0) {
+                                createExplosion(e.x + e.w / 2, e.y + e.h / 2, '#ff007f');
+                                score += 20;
+                                document.getElementById('gameCurrentScore').innerText = toBengaliNumerals(score);
+                                enemies.splice(ei, 1);
+                            }
+                        }
+                    });
+
+                    // Player Hit Detection
+                    if (player.x < e.x + e.w && player.x + player.w > e.x && player.y < e.y + e.h && player.y + player.h > e.y) {
+                        createExplosion(e.x, e.y, '#00f0ff');
+                        enemies.splice(ei, 1);
+                        player.shield -= 25;
+                        if (player.shield <= 0) {
+                            gameOver = true;
+                            playSound('gameover');
+                            saveScore('space', score);
+                            ctx.fillStyle = 'rgba(255,0,127,0.85)';
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                            ctx.fillStyle = '#fff';
+                            ctx.font = 'bold 26px Hind Siliguri';
+                            ctx.textAlign = 'center';
+                            ctx.fillText('গেম ওভার!', canvas.width / 2, canvas.height / 2 - 10);
+                            ctx.font = '16px Hind Siliguri';
+                            ctx.fillText(`আপনার স্কোর: ${toBengaliNumerals(score)}`, canvas.width / 2, canvas.height / 2 + 20);
+                        }
+                    }
+                });
+
+                // Particles
+                particles.forEach((p, pi) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.alpha -= 0.03;
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = Math.max(p.alpha, 0);
+                    ctx.fillRect(p.x, p.y, p.radius, p.radius);
+                    ctx.globalAlpha = 1.0;
+                    if (p.alpha <= 0) particles.splice(pi, 1);
+                });
+
+                gameLoopAnimation = requestAnimationFrame(loop);
+            }
+
+            gameLoopAnimation = requestAnimationFrame(loop);
+        }
+
+        /* ==========================================================================
+           GAME 2: ADVANCED NEON SNAKE (সাপের খেলা)
+           ========================================================================== */
+        function initAdvancedSnake() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 400;
+            canvas.height = 400;
+
+            const grid = 20;
+            let snake = [{ x: 10, y: 10 }];
+            let dx = 1, dy = 0;
+            let food = { x: 15, y: 15, golden: false };
+            let score = 0;
+            let gameOver = false;
+
+            function spawnFood() {
+                food = {
+                    x: Math.floor(Math.random() * (canvas.width / grid)),
+                    y: Math.floor(Math.random() * (canvas.height / grid)),
+                    golden: Math.random() < 0.25
+                };
+            }
+
+            function setDir(newDx, newDy) {
+                if (dx === -newDx || dy === -newDy) return;
+                dx = newDx;
+                dy = newDy;
+            }
+
+            window.onkeydown = e => {
+                if (e.key === 'ArrowUp') setDir(0, -1);
+                if (e.key === 'ArrowDown') setDir(0, 1);
+                if (e.key === 'ArrowLeft') setDir(-1, 0);
+                if (e.key === 'ArrowRight') setDir(1, 0);
+            };
+
+            document.getElementById('btnUp').onclick = () => setDir(0, -1);
+            document.getElementById('btnDown').onclick = () => setDir(0, 1);
+            document.getElementById('btnLeft').onclick = () => setDir(-1, 0);
+            document.getElementById('btnRight').onclick = () => setDir(1, 0);
+
+            let lastTime = 0;
+            function loop(time) {
+                if (gameOver) return;
+
+                if (time - lastTime > 110) {
+                    lastTime = time;
+
+                    const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+
+                    // Wall / Self Collision
+                    if (head.x < 0 || head.x >= canvas.width / grid || head.y < 0 || head.y >= canvas.height / grid || snake.some(s => s.x === head.x && s.y === head.y)) {
+                        gameOver = true;
+                        playSound('gameover');
+                        saveScore('snake', score);
+                        ctx.fillStyle = 'rgba(239, 68, 68, 0.85)';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 26px Hind Siliguri';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('গেম ওভার!', canvas.width / 2, canvas.height / 2 - 10);
+                        ctx.font = '16px Hind Siliguri';
+                        ctx.fillText(`আপনার স্কোর: ${toBengaliNumerals(score)}`, canvas.width / 2, canvas.height / 2 + 20);
+                        return;
+                    }
+
+                    snake.unshift(head);
+
+                    if (head.x === food.x && head.y === food.y) {
+                        playSound('pickup');
+                        score += food.golden ? 30 : 10;
+                        document.getElementById('gameCurrentScore').innerText = toBengaliNumerals(score);
+                        spawnFood();
+                    } else {
+                        snake.pop();
+                    }
+                }
+
+                // Render
+                ctx.fillStyle = '#06060c';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Food
+                ctx.fillStyle = food.golden ? '#ffe600' : '#ff007f';
+                ctx.beginPath();
+                ctx.arc((food.x + 0.5) * grid, (food.y + 0.5) * grid, grid / 2 - 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Snake Body
+                snake.forEach((s, i) => {
+                    ctx.fillStyle = i === 0 ? '#00f0ff' : '#7000ff';
+                    ctx.fillRect(s.x * grid + 1, s.y * grid + 1, grid - 2, grid - 2);
+                });
+
+                gameLoopAnimation = requestAnimationFrame(loop);
+            }
+
+            spawnFood();
+            gameLoopAnimation = requestAnimationFrame(loop);
+        }
+
+        /* ==========================================================================
+           GAME 3: NEON BRICK BREAKER (ইট ভাঙা গেম)
+           ========================================================================== */
+        function initNeonBreaker() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 480;
+            canvas.height = 360;
+
+            let score = 0;
+            let paddleW = 85;
+            let paddleX = (canvas.width - paddleW) / 2;
+            let ballX = canvas.width / 2;
+            let ballY = canvas.height - 30;
+            let dx = 3;
+            let dy = -3;
+            let gameOver = false;
+
+            const brickRows = 4;
+            const brickCols = 6;
+            const brickW = 68;
+            const brickH = 18;
+            const brickPadding = 7;
+            const offsetLeft = 18;
+            const offsetTop = 30;
+
+            let bricks = [];
+            for (let c = 0; c < brickCols; c++) {
+                bricks[c] = [];
+                for (let r = 0; r < brickRows; r++) {
+                    bricks[c][r] = { x: 0, y: 0, status: 1 };
+                }
+            }
+
+            canvas.onmousemove = e => {
+                const rect = canvas.getBoundingClientRect();
+                paddleX = e.clientX - rect.left - paddleW / 2;
+            };
+
+            function loop() {
+                if (gameOver) return;
+
+                ctx.fillStyle = '#06060c';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Draw Bricks
+                for (let c = 0; c < brickCols; c++) {
+                    for (let r = 0; r < brickRows; r++) {
+                        let b = bricks[c][r];
+                        if (b.status === 1) {
+                            let bx = c * (brickW + brickPadding) + offsetLeft;
+                            let by = r * (brickH + brickPadding) + offsetTop;
+                            b.x = bx; b.y = by;
+                            ctx.fillStyle = r === 0 ? '#ff007f' : r === 1 ? '#00f0ff' : r === 2 ? '#ffe600' : '#7000ff';
+                            ctx.fillRect(bx, by, brickW, brickH);
+
+                            // Collision
+                            if (ballX > bx && ballX < bx + brickW && ballY > by && ballY < by + brickH) {
+                                dy = -dy;
+                                b.status = 0;
+                                playSound('bounce');
+                                score += 15;
+                                document.getElementById('gameCurrentScore').innerText = toBengaliNumerals(score);
+                            }
+                        }
+                    }
+                }
+
+                // Ball
+                ctx.fillStyle = '#00f0ff';
+                ctx.beginPath();
+                ctx.arc(ballX, ballY, 7, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Paddle
+                ctx.fillStyle = '#ff007f';
+                ctx.fillRect(paddleX, canvas.height - 12, paddleW, 10);
+
+                // Ball Physics
+                if (ballX + dx > canvas.width - 7 || ballX + dx < 7) dx = -dx;
+                if (ballY + dy < 7) dy = -dy;
+                else if (ballY + dy > canvas.height - 20) {
+                    if (ballX > paddleX && ballX < paddleX + paddleW) {
+                        playSound('bounce');
+                        dy = -dy;
+                    } else {
+                        gameOver = true;
+                        playSound('gameover');
+                        saveScore('breaker', score);
+                        ctx.fillStyle = 'rgba(255,0,127,0.85)';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 26px Hind Siliguri';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('গেম ওভার!', canvas.width / 2, canvas.height / 2);
+                        return;
+                    }
+                }
+
+                ballX += dx;
+                ballY += dy;
+
+                gameLoopAnimation = requestAnimationFrame(loop);
+            }
+
+            gameLoopAnimation = requestAnimationFrame(loop);
+        }
+
+        /* ==========================================================================
+           GAME 4: CYBERPUNK 3D MEMORY CARD MATCH (মেমোরি কার্ড মেলাও)
+           ========================================================================== */
+        function initCyberMemory() {
+            const container = document.getElementById('htmlGameContainer');
+            const icons = ['fa-ghost', 'fa-dragon', 'fa-robot', 'fa-rocket', 'fa-bolt', 'fa-fire'];
+            const deck = [...icons, ...icons].sort(() => Math.random() - 0.5);
+
+            let flipped = [];
+            let matchedCount = 0;
+            let moves = 0;
+
+            container.innerHTML = `
+                <div class="flex flex-col items-center justify-center p-4">
+                    <div class="mb-4 text-sm font-mono text-cyan-400">মোট চাল: <span id="memMoves" class="font-bold text-amber-400">০</span></div>
+                    <div class="grid grid-cols-4 gap-3 w-72 sm:w-80 h-72 sm:h-80 perspective-1000">
+                        ${deck.map((icon, i) => `
+                            <div data-index="${i}" data-icon="${icon}" class="cyber-card relative w-full h-full transform-style-3d cursor-pointer transition-transform duration-500">
+                                <div class="absolute inset-0 bg-slate-900 border border-cyan-500/40 rounded-xl flex items-center justify-center text-cyan-500 text-xl font-bold backface-hidden shadow-lg">
+                                    <i class="fas fa-microchip"></i>
+                                </div>
+                                <div class="absolute inset-0 bg-gradient-to-tr from-purple-900 to-pink-600 border border-pink-400 rounded-xl flex items-center justify-center text-white text-2xl backface-hidden rotate-y-180 shadow-xl">
+                                    <i class="fas ${icon}"></i>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            const cards = container.querySelectorAll('.cyber-card');
+
+            cards.forEach(card => {
+                card.onclick = () => {
+                    if (flipped.length < 2 && !card.classList.contains('rotate-y-180') && !card.classList.contains('matched')) {
+                        playSound('bounce');
+                        card.classList.add('rotate-y-180');
+                        flipped.push(card);
+
+                        if (flipped.length === 2) {
+                            moves++;
+                            document.getElementById('memMoves').innerText = toBengaliNumerals(moves);
+                            document.getElementById('gameCurrentScore').innerText = toBengaliNumerals(moves);
+
+                            if (flipped[0].dataset.icon === flipped[1].dataset.icon) {
+                                playSound('pickup');
+                                flipped.forEach(c => c.classList.add('matched'));
+                                matchedCount++;
+                                flipped = [];
+
+                                if (matchedCount === icons.length) {
+                                    setTimeout(() => {
+                                        playSound('pickup');
+                                        alert(`অভিনন্দন! আপনি মাত্র ${moves} বারে সাইবার কার্ডসমূহ মিলিয়েছেন!`);
+                                        saveScore('memory', Math.max(120 - moves * 2, 10));
+                                    }, 300);
+                                }
+                            } else {
+                                setTimeout(() => {
+                                    flipped.forEach(c => c.classList.remove('rotate-y-180'));
+                                    flipped = [];
+                                }, 700);
+                            }
+                        }
+                    }
+                };
+            });
+        }
+    </script>
+</body>
+</html>
